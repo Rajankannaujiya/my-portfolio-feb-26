@@ -59,6 +59,9 @@ export function Navigation() {
     }
   };
 
+  const RESUME_URL =
+  "https://drive.google.com/file/d/1QR5Sz7Hnzxx1TyuR24zMb3HhN7zCH0Ne/view?usp=sharing";
+
   return (
     <>
       <header
@@ -105,7 +108,7 @@ export function Navigation() {
             <div className="h-4 w-px bg-border/60" />
             <ThemeToggle />
             <a
-              href={process.env.RESUME_URL}
+              href={RESUME_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-1.5 bg-primary text-primary-foreground text-[12px] font-semibold rounded-full hover:opacity-90 transition-all flex items-center gap-1.5"
@@ -161,7 +164,7 @@ export function Navigation() {
             className={`mt-6 w-full transition-all duration-700 delay-200 ${isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
           >
             <a
-              href={process.env.RESUME_URL}
+              href={RESUME_URL}
               target="_blank"
               rel="noreferrer"
               className="flex items-center justify-center gap-2 py-3.5 w-full rounded-xl bg-primary text-primary-foreground text-[13px] font-bold active:scale-[0.98] transition-all"
