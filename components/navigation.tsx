@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic"; // 1. Import dynamic
-import { Magnetic } from "./animations";
-import { Menu, X, Download } from "lucide-react";
+import dynamic from "next/dynamic";
+import { Menu, X, Download, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 
-// 2. Import the ThemeToggle DYNAMICALLY with SSR disabled
-const ThemeToggle = dynamic(() => import("./theme-toggle").then(mod => mod.ThemeToggle), {
-  ssr: false,
-  loading: () => <div className="h-10 w-10" /> // Placeholder while loading
-});
+const ThemeToggle = dynamic(
+  () => import("./theme-toggle").then((mod) => mod.ThemeToggle),
+  {
+    ssr: false,
+    loading: () => <div className="h-8 w-8" />,
+  },
+);
 
 const navItems = [
   { label: "About", href: "#about" },
@@ -18,6 +19,7 @@ const navItems = [
   { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
 ];
+
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,8 +30,8 @@ export function Navigation() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsVisible(false);
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        if (!isOpen) setIsVisible(false);
       } else {
         setIsVisible(true);
       }
@@ -38,11 +40,10 @@ export function Navigation() {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, isOpen]);
 
-  // Handle body overflow
   useEffect(() => {
-    if (typeof document !== 'undefined') {
+    if (typeof document !== "undefined") {
       document.body.style.overflow = isOpen ? "hidden" : "unset";
     }
   }, [isOpen]);
@@ -51,7 +52,7 @@ export function Navigation() {
     setIsOpen(false);
     const element = document.querySelector(href);
     if (element) {
-      const offset = 100;
+      const offset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
       window.scrollTo({ top: offsetPosition, behavior: "smooth" });
@@ -60,63 +61,114 @@ export function Navigation() {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-60 transition-all duration-500 ease-in-out ${isScrolled ? "py-3 bg-background/70 backdrop-blur-xl border-b border-border/50 shadow-sm" : "py-6 bg-transparent"} ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
-        <nav className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-12">
-          
-          <Magnetic>
-            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group flex items-center gap-3 text-left focus:outline-none">
-              <div className="relative w-10 h-10 flex items-center justify-center transition-transform duration-500 group-hover:rotate-10">
-                <div className="absolute inset-0 bg-primary rounded-xl -rotate-6 group-hover:rotate-0 transition-transform duration-500 shadow-lg shadow-primary/20" />
-                <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-primary-foreground/20 bg-card z-10">
-                  <Image src="/Rajan-edit-image.jpeg" alt="Rajan" fill className="object-cover" priority />
-                </div>
+      <header
+        className={`fixed top-0 left-0 right-0 z-100 transition-all duration-300 
+        ${isScrolled ? "py-3 bg-background/90 backdrop-blur-md border-b border-border/40" : "py-4 bg-transparent"} 
+        ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
+      >
+        <nav className="max-w-7xl mx-auto flex items-center justify-between px-6">
+          {/* COMPACT LOGO */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="relative z-110 flex items-center gap-2.5"
+          >
+            <div className="relative w-7 h-7">
+              <div className="absolute inset-0 bg-primary rounded-md -rotate-6" />
+              <div className="relative w-7 h-7 rounded-sm overflow-hidden border border-primary-foreground/10 bg-card z-10">
+                <Image
+                  src="/Rajan-edit-image.jpeg"
+                  alt="Rajan"
+                  fill
+                  className="object-cover"
+                  priority
+                />
               </div>
-              <div className="flex flex-col -space-y-1">
-                <span className="font-black text-xl tracking-tighter text-foreground group-hover:text-primary transition-colors uppercase">RK</span>
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">Portfolio</span>
-              </div>
-            </button>
-          </Magnetic>
+            </div>
+            <span className="font-bold text-base tracking-tight text-foreground uppercase">
+              RK
+            </span>
+          </button>
 
-          <div className="hidden md:flex items-center gap-3">
-            <div className="flex items-center gap-1 bg-muted/40 backdrop-blur-md p-1 rounded-full border border-border/40">
-              {navItems.map((item, index) => (
-                <button key={item.label} onClick={() => handleNavClick(item.href)} className="px-5 py-2 rounded-full text-[13px] font-medium text-muted-foreground hover:text-primary hover:bg-background/80 transition-all duration-300">
-                  <span className="text-primary/40 font-mono text-[10px] mr-1.5 font-bold">0{index + 1}.</span>
+          {/* DESKTOP NAV */}
+          <div className="hidden md:flex items-center gap-6">
+            <div className="flex items-center gap-8">
+              {navItems.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => handleNavClick(item.href)}
+                  className="text-[13px] font-medium text-muted-foreground hover:text-primary transition-colors"
+                >
                   {item.label}
                 </button>
               ))}
             </div>
-            
-            <div className="h-6 w-px bg-border/60 mx-1" />
-            
-            {/* The Dynamic Component */}
+            <div className="h-4 w-px bg-border/60" />
             <ThemeToggle />
-
-            <Magnetic>
-              <a href="https://drive.google.com/file/d/1QR5Sz7Hnzxx1TyuR24zMb3HhN7zCH0Ne/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="ml-2 px-6 py-2.5 bg-foreground text-background dark:bg-primary dark:text-primary-foreground text-[13px] font-bold rounded-full hover:opacity-90 transition-all flex items-center gap-2">
-                <Download className="w-3.5 h-3.5" /> Resume
-              </a>
-            </Magnetic>
+            <a
+              href={process.env.RESUME_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-1.5 bg-primary text-primary-foreground text-[12px] font-semibold rounded-full hover:opacity-90 transition-all flex items-center gap-1.5"
+            >
+              <Download className="w-3 h-3" /> Resume
+            </a>
           </div>
 
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden p-3 rounded-xl bg-muted/50 text-foreground transition-colors z-70">
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* MOBILE TOGGLE (Clean & Minimal) */}
+          <div className="flex md:hidden items-center gap-4 relative z-110">
+            <ThemeToggle />
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-foreground transition-transform active:scale-90"
+              aria-label="Toggle Menu"
+            >
+              {isOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </nav>
       </header>
 
-      {/* MOBILE MENU */}
-      <div className={`fixed inset-0 z-50 md:hidden bg-background transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
-        <div className="flex flex-col items-start justify-center h-full px-10 gap-8">
-          {navItems.map((item, index) => (
-            <button key={item.label} onClick={() => handleNavClick(item.href)} className={`flex items-baseline gap-4 group transition-all duration-700 ${isOpen ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`} style={{ transitionDelay: `${index * 100}ms` }}>
-              <span className="text-primary font-mono text-lg">0{index + 1}.</span>
-              <span className="text-5xl font-bold tracking-tighter group-hover:text-primary transition-colors">{item.label}</span>
-            </button>
-          ))}
-          <div className="flex flex-col w-full gap-4 mt-12">
-            <ThemeToggle />
+      {/* MOBILE MENU - CLEAN COMPACT PANEL */}
+      <div
+        className={`fixed top-0 left-0 right-0 z-90 md:hidden bg-background/98 backdrop-blur-xl border-b border-border/40 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
+        ${isOpen ? "translate-y-0 opacity-100 shadow-2xl" : "-translate-y-full opacity-0 pointer-events-none"}`}
+      >
+        <div className="pt-24 pb-8 px-8 flex flex-col items-center">
+          {/* List Style Nav - Much cleaner than boxes */}
+          <div className="flex flex-col items-center w-full">
+            {navItems.map((item, index) => (
+              <button
+                key={item.label}
+                onClick={() => handleNavClick(item.href)}
+                className={`w-full py-4 text-center text-sm font-semibold tracking-wide text-foreground/80 hover:text-primary active:text-primary transition-colors border-b border-border/10 last:border-none ${
+                  isOpen
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-4 opacity-0"
+                }`}
+                style={{ transitionDelay: `${index * 40}ms` }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Minimal Resume Link */}
+          <div
+            className={`mt-6 w-full transition-all duration-700 delay-200 ${isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
+          >
+            <a
+              href={process.env.RESUME_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center gap-2 py-3.5 w-full rounded-xl bg-primary text-primary-foreground text-[13px] font-bold active:scale-[0.98] transition-all"
+            >
+              <Download className="w-4 h-4" />
+              Resume
+            </a>
           </div>
         </div>
       </div>
