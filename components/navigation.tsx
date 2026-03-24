@@ -60,7 +60,7 @@ export function Navigation() {
   };
 
   const RESUME_URL =
-  "https://drive.google.com/file/d/1QR5Sz7Hnzxx1TyuR24zMb3HhN7zCH0Ne/view?usp=sharing";
+  "https://drive.google.com/file/d/15Axx3TvAr8MJ1C7SNhLe9qMdctYdw3IN/view?usp=sharing";
 
   return (
     <>
